@@ -1,0 +1,79 @@
+import streamlit as st
+import sqlite3
+from db import DB_PATH
+
+def judge_dashboard():
+    if "view" not in st.session_state:
+        st.session_state.view = "Dashboard"
+
+    if st.session_state.view == "Dashboard":
+        st.title("⚖️ Judge Dashboard")
+        st.markdown('<div class="decorative-line"></div>', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("New Cases"):
+                st.session_state.view = "New Cases"
+                st.experimental_rerun()
+        with col2:
+            if st.button("Ongoing Cases"):
+                st.session_state.view = "Ongoing Cases"
+                st.experimental_rerun()
+        with col3:
+            if st.button("Personal Case Archive"):
+                st.session_state.view = "Personal Case Archive"
+                st.experimental_rerun()
+
+        if st.button("Logout"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.experimental_rerun()
+        return
+
+    st.sidebar.markdown("### Judge Navigation")
+    if st.sidebar.button("Back to Dashboard"):
+        st.session_state.view = "Dashboard"
+        st.experimental_rerun()
+
+    options = ["New Cases", "Ongoing Cases", "Personal Case Archive"]
+    choice = st.sidebar.radio("Go to:", options, index=options.index(st.session_state.view) if st.session_state.view in options else 0)
+    if choice != st.session_state.view:
+        st.session_state.view = choice
+        st.experimental_rerun()
+
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM cases")
+        cases = cursor.fetchall()
+
+    if st.session_state.view == "New Cases":
+        cases = [c for c in cases if not c[8]]
+    elif st.session_state.view == "Ongoing Cases":
+        cases = [c for c in cases if not c[8] and c[6]]
+    elif st.session_state.view == "Personal Case Archive":
+        cases = [c for c in cases if c[8]]
+
+    if not cases:
+        st.info("No cases found.")
+        return
+
+    for case in cases:
+        (cid, client, case_type, city, province,
+         facts, arguments, ai_ruling, final_ruling, created_by, created_at) = case
+
+        with st.expander(f"Case ID: {cid} | Client: {client}"):
+            st.write(f"**Location:** {city}, {province}")
+            st.write(f"**Type:** {case_type}")
+            st.code(facts[:300] + ("..." if len(facts) > 300 else ""))
+            st.write("**Arguments:**")
+            st.write(arguments)
+            st.info(f"AI Suggests: {ai_ruling}")
+
+            judge_choice = st.radio(f"Judge's Ruling for {cid}", ["Accept AI Ruling", "Override with My Own"], key=cid)
+            custom_ruling = ai_ruling if judge_choice == "Accept AI Ruling" else st.text_area("Your Ruling", key=cid+"_text")
+
+            if st.button(f"Submit Ruling for {cid}", key=cid+"_submit"):
+                with sqlite3.connect(DB_PATH) as conn2:
+                    cursor2 = conn2.cursor()
+                    cursor2.execute("UPDATE cases SET final_ruling=? WHERE case_id=?", (custom_ruling, cid))
+                    conn2.commit()
+                st.success("Ruling submitted.")
