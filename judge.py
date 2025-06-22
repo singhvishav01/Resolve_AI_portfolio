@@ -57,8 +57,7 @@ def judge_dashboard():
         return
 
     for case in cases:
-        (cid, client, case_type, city, province,
-         facts, arguments, ai_ruling, final_ruling, created_by, created_at) = case
+        (cid, client, case_type, city, province, facts, arguments, ai_ruling, final_ruling, created_by, created_at) = case
 
         with st.expander(f"Case ID: {cid} | Client: {client}"):
             st.write(f"**Location:** {city}, {province}")
@@ -68,12 +67,15 @@ def judge_dashboard():
             st.write(arguments)
             st.info(f"AI Suggests: {ai_ruling}")
 
-            judge_choice = st.radio(f"Judge's Ruling for {cid}", ["Accept AI Ruling", "Override with My Own"], key=cid)
-            custom_ruling = ai_ruling if judge_choice == "Accept AI Ruling" else st.text_area("Your Ruling", key=cid+"_text")
+            if not final_ruling:
+                judge_choice = st.radio(f"Judge's Ruling for {cid}", ["Accept AI Ruling", "Override with My Own"], key=cid)
+                custom_ruling = ai_ruling if judge_choice == "Accept AI Ruling" else st.text_area("Your Ruling", key=cid+"_text")
 
-            if st.button(f"Submit Ruling for {cid}", key=cid+"_submit"):
-                with sqlite3.connect(DB_PATH) as conn2:
-                    cursor2 = conn2.cursor()
-                    cursor2.execute("UPDATE cases SET final_ruling=? WHERE case_id=?", (custom_ruling, cid))
-                    conn2.commit()
-                st.success("Ruling submitted.")
+                if st.button(f"Submit Ruling for {cid}", key=cid+"_submit"):
+                    with sqlite3.connect(DB_PATH) as conn2:
+                        cursor2 = conn2.cursor()
+                        cursor2.execute("UPDATE cases SET final_ruling=? WHERE case_id=?", (custom_ruling, cid))
+                        conn2.commit()
+                    st.success("Ruling submitted.")
+            else:
+                st.success(f"Final Ruling Already Submitted:\n{final_ruling}")
