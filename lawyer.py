@@ -2,13 +2,15 @@ import streamlit as st
 import sqlite3
 import uuid
 from datetime import datetime
-from ai_access import ai_generate_ruling
-from db import DB_PATH
+from ai_access import ai_generate_ruling  # Assuming you separated AI logic
+
+DB_PATH = "cases.db"
 
 def lawyer_dashboard():
     if "view" not in st.session_state:
         st.session_state.view = "Dashboard"
 
+    # Show main dashboard buttons if in dashboard view
     if st.session_state.view == "Dashboard":
         st.title("👩‍⚖️ Lawyer Dashboard")
         st.markdown('<div class="decorative-line"></div>', unsafe_allow_html=True)
@@ -36,6 +38,7 @@ def lawyer_dashboard():
             st.experimental_rerun()
         return
 
+    # Sidebar navigation for lawyer views other than dashboard
     st.sidebar.markdown("### Lawyer Navigation")
     if st.sidebar.button("Back to Dashboard"):
         st.session_state.view = "Dashboard"
@@ -47,6 +50,7 @@ def lawyer_dashboard():
         st.session_state.view = choice
         st.experimental_rerun()
 
+    # File New Case View
     if st.session_state.view == "File New Case":
         st.title("File New Case")
         client_name = st.text_input("Client Name")
@@ -76,19 +80,19 @@ def lawyer_dashboard():
                     conn.commit()
                 st.success(f"Case submitted. Case ID: {case_id}")
 
+    # Cases Views: Ongoing, Completed, Personal Archive
     elif st.session_state.view in ["Ongoing Cases", "Cases with Ruling Completed", "Personal Case Archive"]:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            query = "SELECT case_id, client, final_ruling, facts, arguments FROM cases WHERE created_by=?"
-            cursor.execute(query, (st.session_state.user,))
+            cursor.execute("SELECT case_id, client, final_ruling, facts, arguments FROM cases WHERE created_by=?", (st.session_state.user,))
             rows = cursor.fetchall()
 
         if st.session_state.view == "Ongoing Cases":
-            rows = [r for r in rows if not r[2]]
+            rows = [r for r in rows if not r[2]]  # final_ruling is None
         elif st.session_state.view == "Cases with Ruling Completed":
-            rows = [r for r in rows if r[2]]
+            rows = [r for r in rows if r[2]]  # final_ruling exists
         elif st.session_state.view == "Personal Case Archive":
-            rows = [r for r in rows if r[2]]
+            rows = [r for r in rows if r[2]]  # final_ruling exists
 
         if not rows:
             st.info("No cases found.")
@@ -98,23 +102,41 @@ def lawyer_dashboard():
         selected_case = st.selectbox("Select a case to view or add arguments", case_ids)
 
         case = next((r for r in rows if r[0] == selected_case), None)
-        if case:
+
+        if case is not None:
             st.markdown(f"### Case ID: {case[0]} | Client: {case[1]} | Status: {'Ruled' if case[2] else 'Pending'}")
             st.code(case[3][:300] + ("..." if len(case[3]) > 300 else ""))
-            new_arguments = st.text_area("Add or update Legal Arguments", value=case[4])
-            if st.button("Update Arguments"):
-                with sqlite3.connect(DB_PATH) as conn:
-                    cursor = conn.cursor()
-                    cursor.execute("UPDATE cases SET arguments=? WHERE case_id=?", (new_arguments, selected_case))
-                    conn.commit()
-                st.success("Arguments updated.")
+
+            # Show arguments textarea and update button only if final ruling not done (no final ruling)
+            if not case[2]:
+                new_arguments = st.text_area("Add or update Legal Arguments", value=case[4])
+                if st.button("Update Arguments"):
+                    with sqlite3.connect(DB_PATH) as conn:
+                        cursor = conn.cursor()
+                        cursor.execute("UPDATE cases SET arguments=? WHERE case_id=?", (new_arguments, selected_case))
+                        conn.commit()
+                    st.success("Arguments updated.")
+            else:
+                # Arguments textarea readonly if final ruling exists
+                st.text_area("Legal Arguments", value=case[4], disabled=True)
+
             if case[2]:
                 st.markdown("### Final Ruling")
                 st.write(case[2])
 
+                # Accept or Appeal radio with submit button
                 appeal_choice = st.radio("Do you want to accept the ruling or appeal?", ["Accept", "Appeal"], key=case[0] + "_appeal_choice")
 
-                if appeal_choice == "Appeal":
-                    appeal_reason = st.text_area("Enter reason for appeal", key=case[0] + "_appeal_reason")
-                    if st.button("Submit Appeal", key=case[0] + "_submit_appeal"):
-                        st.success("Appeal submitted. The case will be reviewed.")
+                if st.button("Submit Decision", key=case[0] + "_submit_decision"):
+                    with sqlite3.connect(DB_PATH) as conn:
+                        cursor = conn.cursor()
+                        if appeal_choice == "Accept":
+                            # Move to Personal Case Archive (here just means it's final)
+                            # For now, we keep final_ruling as is to indicate it's archived
+                            st.success("You accepted the ruling. Case archived.")
+                        else:
+                            # If appeal, you might want to set a flag or status (implement as needed)
+                            st.success("Appeal submitted. The case will be reviewed.")
+        else:
+            st.warning("Selected case not found.")
+
