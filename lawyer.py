@@ -2,7 +2,7 @@ import streamlit as st
 import sqlite3
 import uuid
 from datetime import datetime
-from ai_access import ai_generate_ruling  # Assuming you separated AI logic
+from ai_access import ai_generate_ruling  # Updated import as per your info
 
 DB_PATH = "cases.db"
 
@@ -10,7 +10,7 @@ def lawyer_dashboard():
     if "view" not in st.session_state:
         st.session_state.view = "Dashboard"
 
-    # Show main dashboard buttons if in dashboard view
+    # Main dashboard view
     if st.session_state.view == "Dashboard":
         st.title("👩‍⚖️ Lawyer Dashboard")
         st.markdown('<div class="decorative-line"></div>', unsafe_allow_html=True)
@@ -38,7 +38,7 @@ def lawyer_dashboard():
             st.experimental_rerun()
         return
 
-    # Sidebar navigation for lawyer views other than dashboard
+    # Sidebar navigation
     st.sidebar.markdown("### Lawyer Navigation")
     if st.sidebar.button("Back to Dashboard"):
         st.session_state.view = "Dashboard"
@@ -50,7 +50,7 @@ def lawyer_dashboard():
         st.session_state.view = choice
         st.experimental_rerun()
 
-    # File New Case View
+    # File New Case
     if st.session_state.view == "File New Case":
         st.title("File New Case")
         client_name = st.text_input("Client Name")
@@ -80,19 +80,19 @@ def lawyer_dashboard():
                     conn.commit()
                 st.success(f"Case submitted. Case ID: {case_id}")
 
-    # Cases Views: Ongoing, Completed, Personal Archive
+    # Case Views: Ongoing, Completed, Personal Archive
     elif st.session_state.view in ["Ongoing Cases", "Cases with Ruling Completed", "Personal Case Archive"]:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT case_id, client, final_ruling, facts, arguments FROM cases WHERE created_by=?", (st.session_state.user,))
+            cursor.execute("SELECT case_id, client, final_ruling, facts, arguments, created_by FROM cases WHERE created_by=?", (st.session_state.user,))
             rows = cursor.fetchall()
 
         if st.session_state.view == "Ongoing Cases":
-            rows = [r for r in rows if not r[2]]  # final_ruling is None
+            rows = [r for r in rows if not r[2]]
         elif st.session_state.view == "Cases with Ruling Completed":
-            rows = [r for r in rows if r[2]]  # final_ruling exists
+            rows = [r for r in rows if r[2] and not r[4].endswith("[ARCHIVED]")]
         elif st.session_state.view == "Personal Case Archive":
-            rows = [r for r in rows if r[2]]  # final_ruling exists
+            rows = [r for r in rows if r[2] and r[4].endswith("[ARCHIVED]")]
 
         if not rows:
             st.info("No cases found.")
@@ -104,39 +104,41 @@ def lawyer_dashboard():
         case = next((r for r in rows if r[0] == selected_case), None)
 
         if case is not None:
-            st.markdown(f"### Case ID: {case[0]} | Client: {case[1]} | Status: {'Ruled' if case[2] else 'Pending'}")
-            st.code(case[3][:300] + ("..." if len(case[3]) > 300 else ""))
-
-            # Show arguments textarea and update button only if final ruling not done (no final ruling)
-            if not case[2]:
-                new_arguments = st.text_area("Add or update Legal Arguments", value=case[4])
-                if st.button("Update Arguments"):
-                    with sqlite3.connect(DB_PATH) as conn:
-                        cursor = conn.cursor()
-                        cursor.execute("UPDATE cases SET arguments=? WHERE case_id=?", (new_arguments, selected_case))
-                        conn.commit()
-                    st.success("Arguments updated.")
-            else:
-                # Arguments textarea readonly if final ruling exists
-                st.text_area("Legal Arguments", value=case[4], disabled=True)
-
-            if case[2]:
-                st.markdown("### Final Ruling")
+            if st.session_state.view == "Personal Case Archive":
+                st.markdown(f"### Case ID: {case[0]}")
+                st.write(f"**Client:** {case[1]}")
+                st.write(f"**Judge:** {case[5]}")
+                st.markdown("### Final Verdict")
                 st.write(case[2])
+            else:
+                st.markdown(f"### Case ID: {case[0]} | Client: {case[1]} | Status: {'Ruled' if case[2] else 'Pending'}")
+                st.code(case[3][:300] + ("..." if len(case[3]) > 300 else ""))
 
-                # Accept or Appeal radio with submit button
-                appeal_choice = st.radio("Do you want to accept the ruling or appeal?", ["Accept", "Appeal"], key=case[0] + "_appeal_choice")
+                if not case[2]:
+                    new_arguments = st.text_area("Add or update Legal Arguments", value=case[4])
+                    if st.button("Update Arguments"):
+                        with sqlite3.connect(DB_PATH) as conn:
+                            cursor = conn.cursor()
+                            cursor.execute("UPDATE cases SET arguments=? WHERE case_id=?", (new_arguments, selected_case))
+                            conn.commit()
+                        st.success("Arguments updated.")
+                else:
+                    st.text_area("Legal Arguments", value=case[4].replace("[ARCHIVED]", ""), disabled=True)
 
-                if st.button("Submit Decision", key=case[0] + "_submit_decision"):
-                    with sqlite3.connect(DB_PATH) as conn:
-                        cursor = conn.cursor()
-                        if appeal_choice == "Accept":
-                            # Move to Personal Case Archive (here just means it's final)
-                            # For now, we keep final_ruling as is to indicate it's archived
-                            st.success("You accepted the ruling. Case archived.")
-                        else:
-                            # If appeal, you might want to set a flag or status (implement as needed)
-                            st.success("Appeal submitted. The case will be reviewed.")
+                if case[2] and not case[4].endswith("[ARCHIVED]"):
+                    st.markdown("### Final Ruling")
+                    st.write(case[2])
+
+                    appeal_choice = st.radio("Do you want to accept the ruling or appeal?", ["Accept", "Appeal"], key=case[0] + "_appeal_choice")
+
+                    if st.button("Submit Decision", key=case[0] + "_submit_decision"):
+                        with sqlite3.connect(DB_PATH) as conn:
+                            cursor = conn.cursor()
+                            if appeal_choice == "Accept":
+                                archived_args = case[4] + "[ARCHIVED]"
+                                cursor.execute("UPDATE cases SET arguments=? WHERE case_id=?", (archived_args, selected_case))
+                                st.success("You accepted the ruling. Case archived.")
+                            else:
+                                st.success("Appeal submitted. The case will be reviewed.")
         else:
             st.warning("Selected case not found.")
-
