@@ -13,34 +13,34 @@ def judge_dashboard():
         with col1:
             if st.button("New Cases"):
                 st.session_state.view = "New Cases"
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Ongoing Cases"):
                 st.session_state.view = "Ongoing Cases"
-                st.experimental_rerun()
+                st.rerun()
         with col3:
             if st.button("Personal Case Archive"):
                 st.session_state.view = "Personal Case Archive"
-                st.experimental_rerun()
+                st.rerun()
 
         if st.button("Logout"):
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
-            st.experimental_rerun()
+            st.rerun()
         return
 
     st.sidebar.markdown("### Judge Navigation")
     if st.sidebar.button("Back to Dashboard"):
         st.session_state.view = "Dashboard"
-        st.experimental_rerun()
+        st.rerun()
 
     options = ["New Cases", "Ongoing Cases", "Personal Case Archive"]
     choice = st.sidebar.radio("Go to:", options, index=options.index(st.session_state.view) if st.session_state.view in options else 0)
     if choice != st.session_state.view:
         st.session_state.view = choice
-        st.experimental_rerun()
+        st.rerun()
 
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM cases")
         cases = cursor.fetchall()
@@ -57,7 +57,7 @@ def judge_dashboard():
         return
 
     for case in cases:
-        (cid, client, case_type, city, province, facts, arguments, ai_ruling, final_ruling, created_by, created_at) = case
+        (cid, client, case_type, city, province, facts, arguments, ai_ruling, final_ruling, created_by, assigned_judge, created_at) = case
 
         if st.session_state.view == "Personal Case Archive":
             with st.expander(f"Case ID: {cid} | Defendant: {client}"):
@@ -70,14 +70,19 @@ def judge_dashboard():
                 st.code(facts[:300] + ("..." if len(facts) > 300 else ""))
                 st.write("**Arguments:**")
                 st.write(arguments)
-                st.info(f"AI Suggests: {ai_ruling}")
+
+                if arguments.strip() == "":
+                    st.warning("Awaiting lawyer arguments before AI ruling can be shown.")
+                else:
+                    st.info(f"AI Suggests: {ai_ruling}")
+
 
                 if not final_ruling:
                     judge_choice = st.radio(f"Judge's Ruling for {cid}", ["Accept AI Ruling", "Override with My Own"], key=cid)
                     custom_ruling = ai_ruling if judge_choice == "Accept AI Ruling" else st.text_area("Your Ruling", key=cid+"_text")
 
                     if st.button(f"Submit Ruling for {cid}", key=cid+"_submit"):
-                        with sqlite3.connect(DB_PATH) as conn2:
+                        with sqlite3.connect(DB_PATH, timeout=10) as conn2:
                             cursor2 = conn2.cursor()
                             cursor2.execute("UPDATE cases SET final_ruling=? WHERE case_id=?", (custom_ruling, cid))
                             conn2.commit()

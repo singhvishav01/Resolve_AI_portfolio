@@ -24,10 +24,12 @@ def init_db():
                 ai_ruling TEXT,
                 final_ruling TEXT,
                 created_by TEXT,
+                assigned_judge TEXT,
                 created_at TEXT
             )
         """)
         conn.commit()
+
 
 def seed_users():
     with sqlite3.connect(DB_PATH) as conn:
