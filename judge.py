@@ -50,14 +50,18 @@ def judge_dashboard():
     elif st.session_state.view == "Ongoing Cases":
         cases = [c for c in cases if not c[8] and c[6]]
     elif st.session_state.view == "Personal Case Archive":
-        cases = [c for c in cases if c[8]]
+    # assuming lawyer_accepted is at index 12 (after created_at at 11)
+    # Adjust index based on your DB schema order
+
+        cases = [c for c in cases if c[8] and c[12] == 1]
+
 
     if not cases:
         st.info("No cases found.")
         return
 
     for case in cases:
-        (cid, client, case_type, city, province, facts, arguments, ai_ruling, final_ruling, created_by, assigned_judge, created_at) = case
+        (cid, client, case_type, city, province, facts, arguments, ai_ruling, final_ruling, created_by, assigned_judge, created_at,lawyer_accepted) = case
 
         if st.session_state.view == "Personal Case Archive":
             with st.expander(f"Case ID: {cid} | Defendant: {client}"):

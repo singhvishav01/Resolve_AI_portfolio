@@ -4,6 +4,7 @@ from db import init_db, seed_users, DB_PATH
 from login import login
 from lawyer import lawyer_dashboard
 from judge import judge_dashboard
+from admin import admin_dashboard
 import random
 import uuid
 from datetime import datetime
@@ -127,51 +128,11 @@ textarea::placeholder {
 init_db()
 seed_users()
 
-
-def generate_random_cases_every_run(lawyer_username="lawyer1", judge_username="judge1", num_cases=5):
-    from ai_access import ai_generate_ruling
-
-    with sqlite3.connect(DB_PATH, timeout=10) as conn:
-        cursor = conn.cursor()
-
-        dummy_clients = ["John Doe", "Jane Smith", "Alice Johnson", "Bob Brown", "Charlie Davis"]
-        dummy_facts_traffic = "The client was allegedly speeding over the limit on a highway."
-        dummy_facts_housing = "The client is disputing eviction notice from landlord."
-        court_types = ["Traffic Court", "Housing Court"]
-
-        for _ in range(num_cases):
-            case_id = str(uuid.uuid4())[:8]
-            client = random.choice(dummy_clients)
-            case_type = random.choice(court_types)
-            city = "Sample City"
-            province = "Ontario"
-            facts = dummy_facts_traffic if case_type == "Traffic Court" else dummy_facts_housing
-
-            # Simulate the lawyer having added arguments
-            arguments = ""
-
-            # Generate AI ruling ONLY if arguments exist
-            ai_ruling =""
-            final_ruling = None
-            created_at = datetime.now().isoformat()
-
-            print(f"AI ruling generated: {ai_ruling}")  # Confirm it in terminal
-
-            cursor.execute("""
-    INSERT INTO cases (case_id, client, case_type, city, province, facts, arguments, ai_ruling, final_ruling, created_by, assigned_judge, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""", (case_id, client, case_type, city, province, facts, "", "", None, lawyer_username, judge_username, created_at))
-
-        conn.commit()
-
-if "cases_generated" not in st.session_state:
-    generate_random_cases_every_run("lawyer1", "judge1")
-    st.session_state.cases_generated = True
-
 if "user" not in st.session_state:
     login()
 elif st.session_state.role == "Lawyer":
     lawyer_dashboard()
 elif st.session_state.role == "Judge":
     judge_dashboard()
-
+elif st.session_state.role == "Admin":
+    admin_dashboard()

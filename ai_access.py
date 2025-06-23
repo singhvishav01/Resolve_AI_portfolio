@@ -10,10 +10,20 @@ You are an AI judge reviewing a legal case. Based on the provided case details b
 
 Case Facts:
 {arguments}
+Look through Constitutional acts, laws, Legal precedant before ruling and here are some links
+| Data Type       | Source & URL                                                                                                 | Use Case                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------- |
+| Constitution    | [https://laws-lois.justice.gc.ca/eng/Const/index.html](https://laws-lois.justice.gc.ca/eng/Const/index.html) | Reference core constitutional law |
+| Federal Acts    | [https://laws-lois.justice.gc.ca/eng/](https://laws-lois.justice.gc.ca/eng/)                                 | Reference federal statutes        |
+| Provincial Acts | e.g., Ontario: [https://www.ontario.ca/laws](https://www.ontario.ca/laws)                                    | Provincial legal rules            |
+| Case Law        | [https://www.canlii.org/en/](https://www.canlii.org/en/)                                                     | Retrieve precedents for rulings   |
+| Supreme Court   | [https://scc-csc.lexum.com/scc-csc/en/nav.do](https://scc-csc.lexum.com/scc-csc/en/nav.do)                   | Highest authority precedents      |
 
 Respond ONLY with the following format:
 1. A 1-2 line legal reasoning.
 2. Final ruling starting with "Ruling: ..."
+3. cite what law/precedent was used
+
 """
 
     try:
