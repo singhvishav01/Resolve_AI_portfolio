@@ -1,0 +1,217 @@
+/* === Base Page Setup === */
+body, .main, .block-container {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* === Sidebar === */
+[data-testid="stSidebar"] {
+    background-color: #ffffff !important;
+    color: #081134 !important;
+}
+
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] div,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] button,
+[data-testid="stSidebar"] .stRadio {
+    color: #000000 !important;
+}
+
+/* === Headings === */
+h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+}
+
+/* === Buttons === */
+div.stButton > button {
+    background-color: green !important;
+    color: rgb(255, 255, 255) !important;
+    font-weight: 700;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+div.stButton > button:hover {
+    background-color: darkgreen !important;
+    cursor: pointer;
+}
+
+/* === Top-right logout button === */
+.top-right-button {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 10000;
+}
+
+/* === Decorative line === */
+.decorative-line {
+    height: 4px;
+    background-color: red;
+    margin: 20px 0;
+    border-radius: 2px;
+}
+
+/* === AI Ruling Info Box === */
+.stAlert[data-testid="stAlertInfo"] {
+    background-color: #e6f2ff !important;
+    color: #003366 !important;
+    border-left: 5px solid #4f589b !important;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+
+/* === Scrollbars === */
+[data-testid="stSidebar"]::-webkit-scrollbar,
+.main::-webkit-scrollbar {
+    width: 8px;
+}
+[data-testid="stSidebar"]::-webkit-scrollbar-thumb,
+.main::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+/* === Text Inputs, Select, Textarea === */
+input, textarea, select {
+    color: black !important;
+    background-color: #ffffff !important;
+    border: 1px solid #4f589b !important;
+}
+
+
+
+/* Style all labels for inputs and textareas */
+.css-1cpxqw2,  
+label, 
+.stTextInput label, 
+.stTextArea label, 
+.stSelectbox label {
+    color: #081134 !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+}
+.custom-info-box, div.ai-ruling {
+    background-color: #e6f2ff;  /* light blue */
+    color: #003366;             /* dark blue */
+    padding: 12px 15px;
+    border-left: 4px solid #004085;
+    border-radius: 6px;
+    font-weight: 500;
+    margin: 10px 0;
+}
+iv.stEmpty > button {
+    background-color: green !important;
+    color: white !important;
+    font-weight: 700;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+/* Sticky header with company name */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #4f589b;  /* your sidebar/header color */
+    color: white;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 50px;
+    padding-left: 20px;
+    z-index: 1100;  /* above other elements */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Push page content down to avoid overlap */
+.page-content {
+    padding-top: 60px; /* slightly more than header height */
+}
+
+.stAlert[data-testid="stAlertSuccess"] {
+    background-color: #e6ffee !important;
+    color: #1a4731 !important;
+    border-left: 5px solid #28a745 !important;
+    font-weight: 600;
+    border-radius: 5px;
+}
+.stAlert[data-testid="stAlertWarning"] {
+    background-color: #fff4e5 !important;
+    color: #8a5300 !important;
+    border-left: 5px solid #ffc107 !important;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.stAlert[data-testid="stAlertError"] {
+    background-color: #fddede !important;
+    color: #721c24 !important;
+    border-left: 5px solid #dc3545 !important;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.stAlert[data-testid="stAlertWrite"]{
+ background-color: #e6f2ff;  /* light blue */
+    color: #003366;             /* dark blue */
+    padding: 12px 15px;
+    border-left: 4px solid #004085;
+    border-radius: 6px;
+    font-weight: 500;
+    margin: 10px 0;
+
+}
+
+.case-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 15px;
+    margin: 5px 0;
+}
+.case-tag.updated {
+    background-color: #007bff;
+    color: white;
+}
+.case-tag.accepted {
+    background-color: #28a745;
+    color: white;
+}
+.case-tag.appealed {
+    background-color: #ffc107;
+    color: black;
+}
+
+/* Tag Styles */
+.status-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.status-tag.updated {
+    background-color: #e0f7e9;
+    color: #1b5e20;
+    border: 1px solid #66bb6a;
+}
+.status-tag.accepted {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border: 1px solid #64b5f6;
+}
+.status-tag.appealed {
+    background-color: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffb74d;
+}

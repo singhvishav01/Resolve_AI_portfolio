@@ -33,15 +33,14 @@ def init_db():
 
 
 def seed_users():
-    """Ensure default users exist."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT, role TEXT)")
-        default_users = [
-            ("lawyer1", "pass", "Lawyer"),
-            ("judge1", "pass", "Judge"),
-            ("admin1", "pass", "Admin")
-        ]
-        for user in default_users:
-            cursor.execute("INSERT OR IGNORE INTO users VALUES (?, ?, ?)", user)
-        conn.commit()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        if cursor.fetchone()[0] == 0:
+            users = [
+                ("lawyer1", "pass123", "Lawyer"),
+                ("judge1", "pass123", "Judge"),
+                ("admin", "adminpass", "Admin")
+            ]
+            cursor.executemany("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", users)
+            conn.commit()

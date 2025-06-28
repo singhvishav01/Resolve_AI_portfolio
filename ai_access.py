@@ -10,7 +10,7 @@ You are an AI judge reviewing a legal case. Based on the provided case details b
 
 Case Facts:
 {arguments}
-Look through Constitutional acts, laws, Legal precedant before ruling and here are some links
+Look through Constitutional acts, laws, Legal precedant(ONLY CANADA and then further the PROVINCE mentioned) before ruling and here are some links
 | Data Type       | Source & URL                                                                                                 | Use Case                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------- |
 | Constitution    | [https://laws-lois.justice.gc.ca/eng/Const/index.html](https://laws-lois.justice.gc.ca/eng/Const/index.html) | Reference core constitutional law |
