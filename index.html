@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResolveAI — Ontario LTB Dispute Resolution Platform</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets (order matters: main first, then components) -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<!-- ============================================================
+  LOGIN SCREEN
+  Shown on first load or after logout. Session is preserved via
+  sessionStorage so a page refresh restores the user's session.
+============================================================ -->
+<div id="login-screen" class="login-screen">
+  <div class="login-backdrop"></div>
+
+  <div class="login-container">
+
+    <!-- Brand -->
+    <div class="login-brand">
+      <div class="login-logo">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="#B8860B"/>
+          <path d="M10 28L20 12L30 28H10Z" fill="white" opacity="0.9"/>
+          <circle cx="20" cy="22" r="4" fill="white"/>
+        </svg>
+      </div>
+      <div class="login-brand-text">
+        <h1>ResolveAI</h1>
+        <span>Ontario Landlord and Tenant Board · Dispute Resolution Platform</span>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+      <div class="login-card-header">
+        <h2>Sign in to your account</h2>
+        <p>Access your cases, evidence portal, and case history</p>
+      </div>
+
+      <!-- Credentials form (Enter key submits via app.js listener) -->
+      <div class="login-form">
+        <div class="form-group">
+          <label for="inp-user">Username</label>
+          <input type="text" id="inp-user" class="form-control"
+                 placeholder="Enter your username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="inp-pass">Password</label>
+          <input type="password" id="inp-pass" class="form-control"
+                 placeholder="Enter your password" autocomplete="current-password">
+          <div id="login-error" class="form-error" hidden>
+            Invalid username or password. Please try again.
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="Auth.login()">
+          Sign In
+        </button>
+      </div>
+
+      <!-- Quick-access demo buttons -->
+      <div class="login-divider"><span>Quick Access — Demo Accounts</span></div>
+
+      <div class="demo-accounts">
+        <button class="demo-account demo-admin" onclick="Auth.fillDemo('admin','admin123')">
+          <div class="demo-account-icon">SA</div>
+          <div class="demo-account-info">
+            <strong>System Admin</strong>
+            <span>Full platform access · Analytics · All 8 disputes</span>
+          </div>
+        </button>
+        <button class="demo-account demo-tenant" onclick="Auth.fillDemo('tenant1','pass123')">
+          <div class="demo-account-icon">SM</div>
+          <div class="demo-account-info">
+            <strong>Sarah Mitchell</strong>
+            <span>Tenant · 3 active cases · Action required</span>
+          </div>
+        </button>
+        <button class="demo-account demo-tenant" onclick="Auth.fillDemo('tenant2','pass123')">
+          <div class="demo-account-icon">JO</div>
+          <div class="demo-account-info">
+            <strong>James Osei</strong>
+            <span>Tenant · 3 cases · 1 pending ruling</span>
+          </div>
+        </button>
+        <button class="demo-account demo-tenant" onclick="Auth.fillDemo('tenant3','pass123')">
+          <div class="demo-account-icon">PS</div>
+          <div class="demo-account-info">
+            <strong>Priya Sharma</strong>
+            <span>Tenant · 2 active cases</span>
+          </div>
+        </button>
+        <button class="demo-account demo-landlord" onclick="Auth.fillDemo('landlord1','pass123')">
+          <div class="demo-account-icon">DP</div>
+          <div class="demo-account-info">
+            <strong>David Park</strong>
+            <span>Landlord · Park Properties Inc. · 5 cases</span>
+          </div>
+        </button>
+        <button class="demo-account demo-landlord" onclick="Auth.fillDemo('landlord2','pass123')">
+          <div class="demo-account-icon">HN</div>
+          <div class="demo-account-info">
+            <strong>Helen Novak</strong>
+            <span>Landlord · Novak Rentals Ltd. · 3 cases</span>
+          </div>
+        </button>
+        <button class="demo-account demo-adjudicator" onclick="Auth.fillDemo('adjudicator1','pass123')">
+          <div class="demo-account-icon">RK</div>
+          <div class="demo-account-info">
+            <strong>Hon. R. Kapoor</strong>
+            <span>Adjudicator · ON-ADJ-2847 · 3 assigned</span>
+          </div>
+        </button>
+        <button class="demo-account demo-adjudicator" onclick="Auth.fillDemo('adjudicator2','pass123')">
+          <div class="demo-account-icon">MC</div>
+          <div class="demo-account-info">
+            <strong>Hon. M. Chen</strong>
+            <span>Adjudicator · ON-ADJ-3156 · 1 ruling pending</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <p class="login-footer">
+      ResolveAI v3.1 · Vishavpreet Singh · June 2025
+      <a href="#" onclick="return false;">Privacy Policy</a> ·
+      <a href="#" onclick="return false;">Accessibility</a>
+    </p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MAIN APPLICATION SHELL
+  Hidden until auth succeeds. Sidebar + topbar + dynamic content.
+============================================================ -->
+<div id="app-screen" class="app-screen" hidden>
+
+  <!-- ── Sidebar Navigation ───────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <svg class="sidebar-logo" viewBox="0 0 40 40" fill="none">
+        <rect width="40" height="40" rx="10" fill="#B8860B"/>
+        <path d="M10 28L20 12L30 28H10Z" fill="white" opacity="0.9"/>
+        <circle cx="20" cy="22" r="4" fill="white"/>
+      </svg>
+      <span>ResolveAI</span>
+    </div>
+
+    <!-- User card (filled by render.js) -->
+    <div class="sidebar-user" id="sidebar-user"></div>
+
+    <!-- Nav items (filled by render.js based on role) -->
+    <nav class="sidebar-nav" id="sidebar-nav" aria-label="Main navigation"></nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-logout" onclick="Auth.logout()" aria-label="Sign out">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75">
+          <path d="M13 3h4a1 1 0 011 1v12a1 1 0 01-1 1h-4M9 14l4-4-4-4M3 10h10"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Content Area ──────────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <div class="topbar-left">
+        <!-- Mobile hamburger -->
+        <button class="topbar-menu-btn" onclick="UI.toggleSidebar()" aria-label="Toggle navigation">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M3 6h14M3 10h14M3 14h14" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <!-- Breadcrumb (filled by render.js) -->
+        <nav class="topbar-breadcrumb" id="topbar-breadcrumb" aria-label="Breadcrumb">
+          <span class="breadcrumb-root">ResolveAI</span>
+        </nav>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Search (visible on disputes view only) -->
+        <div class="search-container" id="topbar-search" hidden>
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none"
+               stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <circle cx="9" cy="9" r="6"/>
+            <path d="M20 20l-4.5-4.5" stroke-linecap="round"/>
+          </svg>
+          <input type="search" class="search-input" id="search-input"
+                 placeholder="Search disputes… (Ctrl+K)"
+                 aria-label="Search disputes"
+                 oninput="App.handleSearch(this.value)">
+        </div>
+
+        <!-- Notifications bell -->
+        <button class="topbar-icon-btn" id="notif-btn"
+                onclick="App.showView('notifications')"
+                aria-label="Notifications">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M10 2a6 6 0 00-6 6v3L2.5 14h15L16 11V8a6 6 0 00-6-6z" stroke-linecap="round"/>
+            <path d="M8.5 16.5a1.5 1.5 0 003 0" stroke-linecap="round"/>
+          </svg>
+          <span class="notif-badge" id="notif-badge" hidden aria-label="Unread notifications"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dynamic page content (filled by render.js) -->
+    <main class="page-content" id="page-content" role="main"></main>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  DISPUTE DETAIL PANEL (slides in from right)
+============================================================ -->
+<div class="panel-overlay" id="panel-overlay" hidden
+     onclick="UI.closePanel()" role="presentation" aria-hidden="true"></div>
+
+<div class="panel" id="dispute-panel" hidden
+     role="dialog" aria-modal="true" aria-labelledby="panel-case-title">
+  <div class="panel-header">
+    <button class="panel-close" onclick="UI.closePanel()" aria-label="Close case panel">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M15 5L5 15M5 5l10 10" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="panel-header-info" id="panel-header-info">
+      <!-- filled by render.js -->
+    </div>
+  </div>
+  <div class="panel-body" id="panel-body">
+    <!-- filled by render.js -->
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL (create dispute, confirmations)
+============================================================ -->
+<div class="modal-overlay" id="modal-overlay" hidden
+     onclick="UI.closeModal()" role="presentation" aria-hidden="true"></div>
+
+<div class="modal" id="modal" hidden
+     role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-header">
+    <h3 id="modal-title"></h3>
+    <button class="modal-close" onclick="UI.closeModal()" aria-label="Close modal">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M15 5L5 15M5 5l10 10" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <!-- filled by render.js -->
+  </div>
+</div>
+
+
+<!-- ============================================================
+  TOAST NOTIFICATIONS (bottom-right)
+============================================================ -->
+<div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+
+<!-- ============================================================
+  SCRIPTS
+  Load order is important — each file depends on the ones above.
+    1. data.js    — mock database (DB)
+    2. auth.js    — authentication (Auth), depends on DB
+    3. disputes.js — business logic (Disputes), depends on DB + Auth + AIBrief + UI
+    4. ai.js      — brief generation (AIBrief), depends on DB
+    5. render.js  — DOM rendering (UI), depends on DB + Auth + Disputes + App
+    6. app.js     — coordination (App), depends on Auth + Disputes + UI
+============================================================ -->
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/crypto.js"></script>
+<script src="js/disputes.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/render.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
