@@ -1,217 +1,868 @@
-/* === Base Page Setup === */
-body, .main, .block-container {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* ============================================================
+   RESOLVE AI — Legal Intelligence Platform
+   Professional UI  |  v2.0
+   ============================================================ */
+
+/* ── Fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ── Design Tokens ──────────────────────────────────────────── */
+:root {
+    --navy-900: #0b1f3a;
+    --navy-800: #0f2b4c;
+    --navy-700: #143560;
+    --navy-600: #1d4480;
+    --navy-400: #3b6ea8;
+    --gold:     #c9a227;
+    --gold-lt:  #f0d170;
+    --bg:       #f0f3f8;
+    --surface:  #ffffff;
+    --border:   #dde3ed;
+    --text:     #111827;
+    --muted:    #6b7280;
+    --green:    #059669;
+    --green-bg: #ecfdf5;
+    --amber:    #d97706;
+    --amber-bg: #fffbeb;
+    --red:      #dc2626;
+    --red-bg:   #fef2f2;
+    --blue:     #2563eb;
+    --blue-bg:  #eff6ff;
+    --sh1: 0 1px 4px rgba(0,0,0,0.06);
+    --sh2: 0 4px 20px rgba(0,0,0,0.10);
+    --sh3: 0 12px 40px rgba(0,0,0,0.15);
+    --r:   12px;
+    --r-sm: 8px;
 }
 
-/* === Sidebar === */
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── Base ───────────────────────────────────────────────────── */
+html, body, .main, [data-testid="stAppViewContainer"] {
+    background-color: var(--bg) !important;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+    color: var(--text) !important;
+}
+
+.block-container {
+    padding: 2.2rem 2.8rem 4rem !important;
+    max-width: 1200px !important;
+}
+
+/* ── Strip Streamlit chrome ─────────────────────────────────── */
+#MainMenu            { visibility: hidden !important; }
+footer               { visibility: hidden !important; }
+[data-testid="stHeader"]       { display: none !important; }
+[data-testid="stToolbar"]      { display: none !important; }
+[data-testid="stDecoration"]   { display: none !important; }
+[data-testid="stStatusWidget"] { display: none !important; }
+
+/* Push content below our fixed header */
+.block-container { padding-top: 82px !important; }
+
+/* ── App Header (fixed top bar) ─────────────────────────────── */
+.app-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(100deg, var(--navy-900) 0%, var(--navy-700) 70%, var(--navy-600) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 9999;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.app-header-left {
+    display: flex;
+    align-items: center;
+}
+
+.app-header-logo {
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.app-header-logo .accent { color: var(--gold-lt); }
+
+.app-header-divider {
+    width: 1px;
+    height: 22px;
+    background: rgba(255,255,255,0.2);
+    margin: 0 18px;
+}
+
+.app-header-subtitle {
+    font-size: 11px;
+    color: rgba(255,255,255,0.42);
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.header-user-badge {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.90);
+    padding: 5px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
 [data-testid="stSidebar"] {
-    background-color: #ffffff !important;
-    color: #081134 !important;
+    background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%) !important;
+    border-right: none !important;
 }
 
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] div,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] button,
-[data-testid="stSidebar"] .stRadio {
-    color: #000000 !important;
+[data-testid="stSidebar"] .block-container {
+    background: transparent !important;
+    padding: 28px 14px !important;
+    padding-top: 80px !important;
 }
 
-/* === Headings === */
-h1, h2, h3, h4, h5, h6 {
-    color: #000000 !important;
+[data-testid="stSidebar"] * { color: rgba(255,255,255,0.80) !important; }
+
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: rgba(255,255,255,0.40) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.10) !important;
+    margin-bottom: 12px !important;
 }
 
-/* === Buttons === */
-div.stButton > button {
-    background-color: green !important;
-    color: rgb(255, 255, 255) !important;
-    font-weight: 700;
-    padding: 10px 22px;
+[data-testid="stSidebar"] div.stButton > button {
+    background: rgba(255,255,255,0.07) !important;
+    color: rgba(255,255,255,0.88) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    border-radius: var(--r-sm) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    width: 100% !important;
+    text-align: left !important;
+    padding: 10px 14px !important;
+    box-shadow: none !important;
+    letter-spacing: 0 !important;
+    transition: background 0.2s !important;
+}
+
+[data-testid="stSidebar"] div.stButton > button:hover {
+    background: rgba(255,255,255,0.16) !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stSidebar"] .stRadio > div > label {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255,255,255,0.78) !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+}
+
+[data-testid="stSidebar"] .stRadio > div > label:hover {
+    background: rgba(255,255,255,0.10) !important;
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+h1 {
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    color: var(--navy-800) !important;
+    letter-spacing: -0.6px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0 !important;
+}
+h2 { font-size: 20px !important; font-weight: 700 !important; color: var(--navy-800) !important; }
+h3 { font-size: 16px !important; font-weight: 600 !important; color: var(--navy-700) !important; }
+h4 {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: var(--muted) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.9px !important;
+}
+p, .stMarkdown p { color: var(--text); line-height: 1.7; }
+
+/* ── Decorative Divider ─────────────────────────────────────── */
+.decorative-line {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--navy-400) 50%, transparent 100%);
+    margin: 10px 0 28px;
+    border-radius: 2px;
     border: none;
-    border-radius: 6px;
-    margin-top: 10px;
+}
+
+/* ── Default Buttons ────────────────────────────────────────── */
+div.stButton > button {
+    background: linear-gradient(135deg, var(--navy-600) 0%, var(--navy-800) 100%) !important;
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 11px 24px !important;
+    border: none !important;
+    border-radius: var(--r-sm) !important;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s !important;
+    box-shadow: 0 2px 8px rgba(15,43,76,0.25) !important;
 }
 
 div.stButton > button:hover {
-    background-color: darkgreen !important;
-    cursor: pointer;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(15,43,76,0.30) !important;
+    opacity: 0.92 !important;
 }
 
-/* === Top-right logout button === */
-.top-right-button {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    z-index: 10000;
-}
+div.stButton > button:active { transform: translateY(0) !important; }
 
-/* === Decorative line === */
-.decorative-line {
-    height: 4px;
-    background-color: red;
-    margin: 20px 0;
-    border-radius: 2px;
-}
+/* ── Nav Cards (Dashboard) ──────────────────────────────────── */
+.nav-cards-section { margin-top: 8px; }
 
-/* === AI Ruling Info Box === */
-.stAlert[data-testid="stAlertInfo"] {
-    background-color: #e6f2ff !important;
-    color: #003366 !important;
-    border-left: 5px solid #4f589b !important;
-    font-weight: 500;
-    border-radius: 5px;
-}
-
-
-/* === Scrollbars === */
-[data-testid="stSidebar"]::-webkit-scrollbar,
-.main::-webkit-scrollbar {
-    width: 8px;
-}
-[data-testid="stSidebar"]::-webkit-scrollbar-thumb,
-.main::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
-}
-
-/* === Text Inputs, Select, Textarea === */
-input, textarea, select {
-    color: black !important;
-    background-color: #ffffff !important;
-    border: 1px solid #4f589b !important;
-}
-
-
-
-/* Style all labels for inputs and textareas */
-.css-1cpxqw2,  
-label, 
-.stTextInput label, 
-.stTextArea label, 
-.stSelectbox label {
-    color: #081134 !important;
+.nav-cards-section div.stButton > button {
+    height: 120px !important;
+    width: 100% !important;
+    background: var(--surface) !important;
+    color: var(--navy-800) !important;
+    font-size: 14px !important;
     font-weight: 600 !important;
+    border: 2px solid var(--border) !important;
+    border-radius: var(--r) !important;
+    box-shadow: var(--sh1) !important;
+    white-space: pre-line !important;
+    text-align: center !important;
+    line-height: 1.5 !important;
+    padding: 18px 14px !important;
+    letter-spacing: 0 !important;
+    transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+
+.nav-cards-section div.stButton > button:hover {
+    border-color: var(--navy-600) !important;
+    background: linear-gradient(135deg, #f0f5ff 0%, #e8f0fe 100%) !important;
+    color: var(--navy-700) !important;
+    box-shadow: var(--sh2) !important;
+    transform: translateY(-6px) !important;
+    opacity: 1 !important;
+}
+
+/* ── Logout Button ──────────────────────────────────────────── */
+.logout-btn-container {
+    position: fixed !important;
+    top: 14px !important;
+    right: 28px !important;
+    z-index: 99999 !important;
+}
+
+.logout-btn-container div.stButton > button {
+    background: rgba(255,255,255,0.10) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.28) !important;
+    font-size: 13px !important;
+    padding: 5px 18px !important;
+    border-radius: 30px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    letter-spacing: 0.3px !important;
+    transition: background 0.2s !important;
+}
+
+.logout-btn-container div.stButton > button:hover {
+    background: rgba(255,255,255,0.22) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+
+/* ── Inputs ─────────────────────────────────────────────────── */
+.stTextInput > div > div > input,
+.stTextArea > div > div > textarea {
+    background: var(--surface) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--r-sm) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    padding: 11px 14px !important;
+    box-shadow: var(--sh1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus {
+    border-color: var(--navy-600) !important;
+    box-shadow: 0 0 0 3px rgba(29,68,128,0.13) !important;
+    outline: none !important;
+}
+
+/* ── Selectbox ──────────────────────────────────────────────── */
+.stSelectbox [data-baseweb="select"] > div {
+    background: var(--surface) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--r-sm) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    box-shadow: var(--sh1);
+}
+
+/* ── Labels ─────────────────────────────────────────────────── */
+label,
+.stTextInput label,
+.stTextArea label,
+.stSelectbox label,
+.stFileUploader label,
+.stRadio > label {
+    color: var(--navy-800) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Expanders ──────────────────────────────────────────────── */
+[data-testid="stExpander"] {
+    background: var(--surface) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--r) !important;
+    box-shadow: var(--sh1) !important;
+    margin-bottom: 14px !important;
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+[data-testid="stExpander"]:hover {
+    box-shadow: var(--sh2) !important;
+    border-color: #c4cfde !important;
+}
+
+[data-testid="stExpander"] summary {
+    padding: 16px 20px !important;
+    font-weight: 600 !important;
+    color: var(--navy-800) !important;
+    background: var(--surface) !important;
     font-size: 15px !important;
+    font-family: 'Inter', sans-serif !important;
 }
-.custom-info-box, div.ai-ruling {
-    background-color: #e6f2ff;  /* light blue */
-    color: #003366;             /* dark blue */
-    padding: 12px 15px;
-    border-left: 4px solid #004085;
-    border-radius: 6px;
+
+[data-testid="stExpander"] summary:hover { background: #f5f8ff !important; }
+
+/* ── Alerts ─────────────────────────────────────────────────── */
+[data-testid="stAlertInfo"]    { background: var(--blue-bg)  !important; color: #1e40af !important; border-left: 4px solid var(--blue)  !important; border-radius: var(--r-sm) !important; font-weight:500; }
+[data-testid="stAlertSuccess"] { background: var(--green-bg) !important; color: #065f46 !important; border-left: 4px solid var(--green) !important; border-radius: var(--r-sm) !important; font-weight:500; }
+[data-testid="stAlertWarning"] { background: var(--amber-bg) !important; color: #92400e !important; border-left: 4px solid var(--amber) !important; border-radius: var(--r-sm) !important; font-weight:500; }
+[data-testid="stAlertError"]   { background: var(--red-bg)   !important; color: #991b1b !important; border-left: 4px solid var(--red)   !important; border-radius: var(--r-sm) !important; font-weight:500; }
+
+/* ── Custom Boxes ───────────────────────────────────────────── */
+.custom-info-box {
+    background: var(--blue-bg);
+    color: #1e40af;
+    padding: 16px 20px;
+    border-left: 4px solid var(--blue);
+    border-radius: var(--r-sm);
     font-weight: 500;
-    margin: 10px 0;
-}
-iv.stEmpty > button {
-    background-color: green !important;
-    color: white !important;
-    font-weight: 700;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 6px;
-    margin-top: 10px;
-}
-/* Sticky header with company name */
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    background-color: #4f589b;  /* your sidebar/header color */
-    color: white;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 50px;
-    padding-left: 20px;
-    z-index: 1100;  /* above other elements */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-size: 14px;
+    margin: 16px 0;
 }
 
-/* Push page content down to avoid overlap */
-.page-content {
-    padding-top: 60px; /* slightly more than header height */
-}
-
-.stAlert[data-testid="stAlertSuccess"] {
-    background-color: #e6ffee !important;
-    color: #1a4731 !important;
-    border-left: 5px solid #28a745 !important;
-    font-weight: 600;
-    border-radius: 5px;
-}
-.stAlert[data-testid="stAlertWarning"] {
-    background-color: #fff4e5 !important;
-    color: #8a5300 !important;
-    border-left: 5px solid #ffc107 !important;
-    font-weight: 600;
-    border-radius: 5px;
-}
-
-.stAlert[data-testid="stAlertError"] {
-    background-color: #fddede !important;
-    color: #721c24 !important;
-    border-left: 5px solid #dc3545 !important;
-    font-weight: 600;
-    border-radius: 5px;
-}
-
-.stAlert[data-testid="stAlertWrite"]{
- background-color: #e6f2ff;  /* light blue */
-    color: #003366;             /* dark blue */
-    padding: 12px 15px;
-    border-left: 4px solid #004085;
-    border-radius: 6px;
+.ai-ruling {
+    background: linear-gradient(135deg, #eef4ff 0%, #e0ecff 100%);
+    color: var(--navy-700);
+    padding: 16px 20px;
+    border-left: 4px solid var(--navy-600);
+    border-radius: var(--r-sm);
     font-weight: 500;
-    margin: 10px 0;
-
+    font-style: italic;
+    margin: 12px 0;
+    font-size: 14px;
 }
 
-.case-tag {
-    display: inline-block;
-    padding: 6px 12px;
+/* ── Radio Buttons ──────────────────────────────────────────── */
+.stRadio > div { gap: 8px; }
+
+.stRadio > div > label {
+    background: var(--surface) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--r-sm) !important;
+    padding: 10px 18px !important;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-weight: 500 !important;
+    color: var(--text) !important;
+    font-size: 14px !important;
+}
+
+.stRadio > div > label:hover {
+    border-color: var(--navy-600) !important;
+    background: #f0f5ff !important;
+}
+
+/* ── File Uploader ──────────────────────────────────────────── */
+[data-testid="stFileUploader"] {
+    background: var(--surface) !important;
+    border: 2px dashed var(--border) !important;
+    border-radius: var(--r) !important;
+    padding: 20px !important;
+    transition: all 0.2s;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--navy-600) !important;
+    background: #f5f8ff !important;
+}
+
+/* ── Code Blocks ────────────────────────────────────────────── */
+pre, .stCodeBlock code {
+    background: #f6f8fc !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--r-sm) !important;
+    font-size: 12.5px !important;
+    color: var(--navy-800) !important;
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c8d0de; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+
+/* ══════════════════════════════════════════════════════════════
+   LOGIN PAGE
+   ══════════════════════════════════════════════════════════════ */
+.login-wrap {
+    max-width: 460px;
+    margin: 0 auto;
+}
+
+.login-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 48px 44px 36px;
+    box-shadow: var(--sh3);
+    border: 1px solid var(--border);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-icon {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    line-height: 1;
+}
+
+.login-brand {
+    font-size: 36px !important;
+    font-weight: 800 !important;
+    color: var(--navy-800) !important;
+    letter-spacing: -1.5px !important;
+    margin: 0 0 6px !important;
+    line-height: 1 !important;
+}
+
+.login-brand .accent { color: var(--gold); }
+
+.login-tagline {
+    color: var(--muted) !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    margin: 0 0 6px !important;
+    letter-spacing: 0.2px;
+}
+
+.login-strip {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--navy-400) 100%);
+    border-radius: 2px;
+    margin: 0 auto 28px;
+    width: 60px;
+}
+
+.login-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 0 24px;
+}
+
+.login-wrap div.stButton > button {
+    background: linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%) !important;
+    font-size: 15px !important;
+    padding: 13px 24px !important;
+    letter-spacing: 0.4px;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 16px rgba(15,43,76,0.30) !important;
+}
+
+.login-wrap div.stButton > button:hover {
+    box-shadow: 0 8px 28px rgba(15,43,76,0.40) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ROLE BADGE & PAGE TITLE
+   ══════════════════════════════════════════════════════════════ */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-600) 100%);
+    color: #fff;
+    padding: 5px 16px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: 0.4px;
+    box-shadow: var(--sh1);
+}
+
+.page-title-section { margin-bottom: 4px; }
+.page-title-section p { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
+
+/* ══════════════════════════════════════════════════════════════
+   CASE DETAIL CARD
+   ══════════════════════════════════════════════════════════════ */
+.case-detail-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-left: 4px solid var(--navy-600);
+    border-radius: var(--r);
+    padding: 18px 22px;
+    margin: 14px 0 18px;
+    box-shadow: var(--sh1);
+}
+
+.case-detail-card h4 {
+    color: var(--muted) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+    margin: 0 0 10px !important;
+}
+
+.case-detail-card p { margin: 6px 0; font-size: 14px; color: var(--text); }
+
+/* ══════════════════════════════════════════════════════════════
+   STATUS / CASE TAGS
+   ══════════════════════════════════════════════════════════════ */
+.case-tag, .status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    margin: 2px 4px 2px 0;
+}
+
+.case-tag.updated,  .status-tag.updated  { background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd; }
+.case-tag.accepted, .status-tag.accepted { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
+.case-tag.appealed, .status-tag.appealed { background:#fef3c7; color:#b45309; border:1px solid #fcd34d; }
+.case-tag.pending                        { background:#f1f5f9; color:#6b7280; border:1px solid #cbd5e1; }
+.case-tag.ruled                          { background:#f0fdf4; color:#166534; border:1px solid #4ade80; }
+
+/* ══════════════════════════════════════════════════════════════
+   STAT CARDS ROW  (dashboard overview)
+   ══════════════════════════════════════════════════════════════ */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0 32px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border-radius: var(--r);
+    padding: 22px 24px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--sh1);
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.stat-card:hover {
+    box-shadow: var(--sh2);
+    transform: translateY(-2px);
+}
+
+.stat-card .stat-icon { font-size: 30px; margin-bottom: 10px; display: block; }
+.stat-card .stat-value {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--navy-800);
+    line-height: 1;
+    margin-bottom: 6px;
+    font-family: 'Inter', sans-serif;
+}
+.stat-card .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    color: var(--muted);
+    margin: 0 0 14px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CASE LIST CARDS  (replaces selectbox)
+   ══════════════════════════════════════════════════════════════ */
+.case-list-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r);
+    padding: 16px 20px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.case-list-card:hover { border-color: #aab8d0; box-shadow: var(--sh1); }
+
+.case-id-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.case-client-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy-800);
+    margin: 6px 0 4px;
+}
+
+.case-facts-preview {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 600px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CASE DETAIL LAYOUT  (two-column)
+   ══════════════════════════════════════════════════════════════ */
+.section-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 0 0 8px;
+    border-bottom: 2px solid var(--border);
+    margin: 24px 0 14px;
+}
+
+.facts-box {
+    background: #f6f8fc;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.75;
+    white-space: pre-wrap;
+}
+
+.action-panel {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r);
+    padding: 20px 22px;
+    box-shadow: var(--sh1);
+    margin-bottom: 14px;
+}
+
+.action-panel-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+}
+
+.info-item {
+    padding: 11px 14px;
+    background: var(--bg);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+}
+
+.info-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 3px;
+}
+
+.info-value {
     font-size: 14px;
     font-weight: 600;
-    border-radius: 15px;
-    margin: 5px 0;
-}
-.case-tag.updated {
-    background-color: #007bff;
-    color: white;
-}
-.case-tag.accepted {
-    background-color: #28a745;
-    color: white;
-}
-.case-tag.appealed {
-    background-color: #ffc107;
-    color: black;
+    color: var(--navy-800);
 }
 
-/* Tag Styles */
-.status-tag {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    margin-left: 10px;
+.verdict-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 2px solid #86efac;
+    border-radius: var(--r);
+    padding: 18px 20px;
+    margin: 14px 0;
 }
-.status-tag.updated {
-    background-color: #e0f7e9;
-    color: #1b5e20;
-    border: 1px solid #66bb6a;
+
+.verdict-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #15803d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
 }
-.status-tag.accepted {
-    background-color: #e3f2fd;
-    color: #0d47a1;
-    border: 1px solid #64b5f6;
+
+.verdict-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #14532d;
+    line-height: 1.7;
 }
-.status-tag.appealed {
-    background-color: #fff3e0;
-    color: #e65100;
-    border: 1px solid #ffb74d;
+
+/* ══════════════════════════════════════════════════════════════
+   JUDGE  —  AI RULING CARD
+   ══════════════════════════════════════════════════════════════ */
+.ai-card {
+    background: linear-gradient(135deg, #eef4ff 0%, #e0ecff 100%);
+    border: 2px solid #93c5fd;
+    border-radius: var(--r);
+    padding: 18px 20px;
+    margin: 14px 0;
+}
+
+.ai-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--navy-600);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.ai-card-text {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--navy-700);
+    line-height: 1.75;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ADMIN  —  FORM SECTION HEADERS
+   ══════════════════════════════════════════════════════════════ */
+.form-section {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--sh1);
+}
+
+.form-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy-800);
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* "View" button column next to case cards */
+.case-view-btn div.stButton > button {
+    background: transparent !important;
+    color: var(--navy-600) !important;
+    border: 1.5px solid var(--navy-600) !important;
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    letter-spacing: 0.3px !important;
+    white-space: nowrap !important;
+}
+
+.case-view-btn div.stButton > button:hover {
+    background: var(--navy-600) !important;
+    color: white !important;
+    transform: none !important;
+    box-shadow: var(--sh1) !important;
+    opacity: 1 !important;
+}
+
+/* Section header styling */
+.section-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 0 0 8px;
+    border-bottom: 2px solid var(--border);
+    margin: 28px 0 14px;
+}
+
+/* Textarea label — make it look like a section sublabel */
+.stTextArea label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--muted) !important;
+    margin-bottom: 6px !important;
+}
+
+/* Admin submit / full-width CTA buttons */
+[data-testid="stMainBlockContainer"] > div > div > div:last-of-type div.stButton > button[data-testid="baseButton-secondary"] {
+    background: linear-gradient(135deg, var(--gold) 0%, #9e7820 100%) !important;
+    font-size: 16px !important;
+    padding: 14px !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 16px rgba(201,162,39,0.35) !important;
 }
