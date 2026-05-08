@@ -1,0 +1,17 @@
+# Old prototype — kept locally for reference, not part of the portfolio
+ResolveAI_v3.html
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+
+# Environment / secrets — never commit these
+.env
+.env.local
+*.key
+*.pem
